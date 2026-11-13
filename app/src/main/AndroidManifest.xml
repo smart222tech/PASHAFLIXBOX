@@ -5,6 +5,8 @@
     <uses-feature android:name="android.hardware.touchscreen" android:required="false" />
     <application
         android:allowBackup="false"
+        android:icon="@drawable/ic_pasha_icon"
+        android:banner="@drawable/tv_banner"
         android:label="PASHAFLIXBOX"
         android:supportsRtl="true"
         android:usesCleartextTraffic="true"
