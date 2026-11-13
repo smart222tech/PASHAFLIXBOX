@@ -1,44 +1,29 @@
 # PASHAFLIXBOX product plan
 
-## Phase 0 — Foundation
+## Implemented foundation
 - [x] Dedicated repository and development branch.
 - [x] Kotlin, Compose and Media3 project shell.
-- [x] New application ID and launcher identity.
-- [x] Search, demo catalogue and persistent favourites.
-- [x] Direct authorized HTTPS playback entry point.
+- [x] Android phone and Leanback launcher entry points.
+- [x] Search and catalogue sections for movies and series.
+- [x] M3U playlist download and parsing over HTTP(S).
+- [x] Playlist title, group/category and poster URL extraction.
+- [x] Poster display in catalogue and detail screen.
+- [x] Persistent favourites, saved playlist URL and watch history.
+- [x] Automatic reload of the saved playlist at app launch.
+- [x] Direct HTTPS source testing and Media3 playback.
+- [x] Unit tests for M3U parsing.
 - [x] GitHub Actions debug APK workflow.
-- [ ] Confirm first CI build and fix compiler/build issues.
 
-## Phase 1 — Core data
-- [ ] Normalized Movie, Series, Season and Episode models.
-- [ ] Repository abstraction around the catalogue.
-- [ ] Persistent watch history and resume position.
-- [ ] Loading, empty and typed error states.
+## Remaining product work
+- [ ] Confirm CI build for the current M3U implementation and fix any compiler/test issues.
+- [ ] Add robust TV layout, focus styling, TV banner and launcher artwork.
+- [ ] Improve movie/series classification and category filters.
+- [ ] Add playback resume position and next-episode flow.
+- [ ] Add optional JSON API provider for personal media servers.
+- [ ] Add source management for multiple authorized playlists.
+- [ ] Add typed network/playback error UI and retry actions.
+- [ ] Test on a physical Android phone and Google TV device.
+- [ ] Release signing, privacy and dependency/license review.
 
-## Phase 2 — Authorized providers
-- [ ] Personal-server provider interface.
-- [ ] JSON/API provider implementation.
-- [ ] M3U playlist support for user-owned or authorized playlists.
-- [ ] Provider settings, connection testing and source management.
-- [ ] Metadata and artwork mapping.
-
-## Phase 3 — Playback
-- [ ] Playback controller and lifecycle handling.
-- [ ] HLS/DASH source selection.
-- [ ] Audio and subtitle selection.
-- [ ] Resume playback and playback history.
-- [ ] Graceful error and retry handling.
-
-## Phase 4 — Phone and TV experience
-- [ ] Responsive phone/tablet layouts.
-- [ ] TV home screen and D-pad navigation.
-- [ ] Explicit focus styling and focus-order tests.
-- [ ] TV launcher banner and app artwork.
-- [ ] Remote-control playback behavior.
-
-## Phase 5 — Quality and release
-- [ ] Unit and UI tests.
-- [ ] CI verification for debug and release variants.
-- [ ] Install and test on Android phone and Google TV.
-- [ ] Privacy, security and third-party license review.
-- [ ] Release signing and versioning.
+## Source and rights boundary
+Users provide playlists and media servers they own or are authorized to access. The app does not scrape unauthorized websites or bypass DRM, authentication, paywalls or access controls.
