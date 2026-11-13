@@ -72,7 +72,21 @@ private fun PashaFlixBoxApp() {
     var loading by remember { mutableStateOf(false) }
 
     LaunchedEffect(savedPlaylistUrl) {
-        if (savedPlaylistUrl.isNotBlank() && playlistUrl.isBlank()) playlistUrl = savedPlaylistUrl
+        if (savedPlaylistUrl.isNotBlank()) {
+            playlistUrl = savedPlaylistUrl
+            if (playlistItems.isEmpty()) {
+                loading = true
+                status = "Gespeicherte Playlist wird geladen …"
+                try {
+                    playlistItems = M3uPlaylistRepository.load(savedPlaylistUrl)
+                    status = playlistItems.size.toString() + " Einträge geladen"
+                } catch (error: Exception) {
+                    status = error.message ?: "Gespeicherte Playlist konnte nicht geladen werden"
+                } finally {
+                    loading = false
+                }
+            }
+        }
     }
 
     val catalogue = remember(playlistItems) {
