@@ -1,37 +1,21 @@
 # PASHAFLIXBOX architecture
 
-## Target platforms
-A shared Android application for phones/tablets and Google TV / Android TV. UI components are touch-friendly on mobile and reachable with a remote control on TV.
+## Layers
+- **UI:** Jetpack Compose catalogue, search, detail, episode and source selection screens for phones and Android TV.
+- **Metadata:** Cinemeta-compatible Stremio catalogue and metadata API. Browsing/search works independently from video-source configuration.
+- **Providers:** configured Stremio add-on manifest; add-ons expose streams through the standard `/stream/{type}/{id}.json` resource.
+- **Playback:** Media3 handles direct HTTP(S), HLS and DASH stream URLs returned by providers.
+- **Persistence:** DataStore favourites/history; SharedPreferences stores the optional add-on manifest URL.
 
-## Current layers
-- **app:** Compose navigation, catalogue, details, settings and UI state.
-- **data:** M3U network loading/parsing, playlist metadata, DataStore favourites/history/settings.
-- **providers:** extensible contracts for additional authorized catalogue/source providers.
-- **playback:** Media3/ExoPlayer for supported direct media, HLS and DASH streams.
-- **tv:** Leanback launcher entry and focusable Compose controls; further TV-specific styling remains planned.
+## API flow
+1. Fetch Cinemeta manifest and discover movie/series catalogue IDs.
+2. Query `/catalog/{type}/{catalogId}.json?search=...`.
+3. Load `/meta/{type}/{id}.json` for synopsis, artwork and series episodes.
+4. Query configured add-on `/stream/{type}/{id}.json` only after the user opens a title.
+5. Offer direct HTTP(S) URLs to Media3. Torrent-only and external-only results are not passed to the player.
 
-## Playlist model
-Each M3U entry is normalized to a stable ID derived from its stream URL, title, group/category, optional artwork URL and playback URL.
+## AIOStreams
+A generic AIOStreams install manifest can report `configurationRequired`. The app detects this and explains that a configured personal manifest URL is needed. The app does not pretend the bare manifest can return streams.
 
-## Provider contract
-A provider returns normalized metadata and playback options for content it is authorized to serve. The UI must not depend on provider-specific HTML or parsing details. Future providers should return typed errors such as unavailable, authentication required, network error and unsupported media.
-
-## Playback
-- Media3/ExoPlayer is the default for direct authorized media URLs.
-- HLS and DASH are included through matching Media3 modules.
-- External players may be added as optional explicit integrations.
-- No DRM circumvention, access-control bypass or unauthorized stream extraction.
-
-## Persistence and security
-- Persist stable media IDs for favourites and history.
-- Playlist URLs are stored locally in DataStore; avoid placing private credentials in playlist URLs.
-- Never commit credentials, private tokens or server passwords.
-- Use secure storage for secrets when account-based server connections are implemented.
-- Do not log authentication headers or private playback URLs.
-
-## TV requirements
-- D-pad navigation for every interactive screen.
-- Clear visible focus states.
-- No required touch gestures.
-- Leanback launcher entry and TV-appropriate artwork.
-- Large readable text and adequate focus targets.
+## Safety
+No DRM circumvention, authentication bypass, paywall bypass, or unauthorized stream extraction. Provider access remains subject to the add-on's own configuration and rights.
