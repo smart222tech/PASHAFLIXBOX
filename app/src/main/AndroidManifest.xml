@@ -7,6 +7,7 @@
         android:allowBackup="false"
         android:label="PASHAFLIXBOX"
         android:supportsRtl="true"
+        android:usesCleartextTraffic="true"
         android:theme="@android:style/Theme.Material.NoActionBar">
         <activity
             android:name=".PlayerActivity"
