@@ -55,11 +55,13 @@ class StremioCatalogRepository(context: Context) {
                 .filterNotNull().firstOrNull { it.optString("type") == type }
                 ?: throw IllegalStateException("Der Katalog für $type ist beim Metadatenanbieter nicht verfügbar.")
             val catalogId = selected.optString("id")
-            val endpoint = "$CINEMETA/catalog/$type/${encodePath(catalogId)}.json"
-            val params = mutableListOf<String>()
-            if (search.isNotBlank()) params += "search=${encodeQuery(search.trim())}"
-            if (skip > 0) params += "skip=$skip"
-            val response = getJson(endpoint + if (params.isEmpty()) "" else "?" + params.joinToString("&"))
+            val endpoint = buildString {
+                append("$CINEMETA/catalog/$type/${encodePath(catalogId)}")
+                if (search.isNotBlank()) append("/search=${encodePath(search.trim())}")
+                if (skip > 0) append("/skip=$skip")
+                append(".json")
+            }
+            val response = getJson(endpoint)
             val metas = response.optJSONArray("metas") ?: JSONArray()
             (0 until metas.length()).mapNotNull { index -> metas.optJSONObject(index)?.toMedia(type) }
         }
@@ -150,7 +152,6 @@ class StremioCatalogRepository(context: Context) {
     }
 
     private fun encodePath(value: String): String = URLEncoder.encode(value, "UTF-8").replace("+", "%20")
-    private fun encodeQuery(value: String): String = URLEncoder.encode(value, "UTF-8")
 
     private fun JSONObject.toMedia(fallbackType: String) = CatalogMedia(
         id = optString("id"),
