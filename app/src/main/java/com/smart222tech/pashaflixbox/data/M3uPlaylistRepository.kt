@@ -64,7 +64,8 @@ object M3uPlaylistRepository {
                 if (stream != null && (stream.protocol == "https" || stream.protocol == "http")) {
                     val title = pendingTitle!!.ifBlank { "Unbenannter Eintrag" }
                     result += PlaylistItem(
-                        id = MessageDigest.getInstance("SHA-256").digest(line.toByteArray())\n                            .joinToString("") { byte -> "%02x".format(byte) },
+                        id = MessageDigest.getInstance("SHA-256").digest(line.toByteArray())
+                            .joinToString("") { byte -> "%02x".format(byte) },
                         title = title,
                         group = pendingGroup,
                         logoUrl = pendingLogo?.takeIf { it.startsWith("https://") || it.startsWith("http://") },
