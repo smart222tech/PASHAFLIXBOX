@@ -14,13 +14,13 @@ class AppStore(context: Context) {
     private val dataStore = context.applicationContext.pashaStore
     private val favoritesKey = stringSetPreferencesKey("favorite_ids")
     private val historyKey = stringPreferencesKey("watch_history")
-    private val playlistKey = stringPreferencesKey("playlist_url")
+    private val playlistKey = stringPreferencesKey("playlist_url_encrypted")
 
     val favorites: Flow<Set<String>> = dataStore.data.map { it[favoritesKey] ?: emptySet() }
     val history: Flow<List<String>> = dataStore.data.map {
         it[historyKey].orEmpty().split("\n").filter(String::isNotBlank)
     }
-    val playlistUrl: Flow<String> = dataStore.data.map { it[playlistKey].orEmpty() }
+    val playlistUrl: Flow<String> = dataStore.data.map { it[playlistKey]?.let(SecureUrlCipher::decrypt).orEmpty() }
 
     suspend fun setFavorite(id: String, enabled: Boolean) {
         dataStore.edit { prefs ->
@@ -31,7 +31,7 @@ class AppStore(context: Context) {
     }
 
     suspend fun savePlaylistUrl(url: String) {
-        dataStore.edit { it[playlistKey] = url.trim() }
+        dataStore.edit { it[playlistKey] = SecureUrlCipher.encrypt(url.trim()) }
     }
 
     suspend fun recordPlayback(id: String) {
