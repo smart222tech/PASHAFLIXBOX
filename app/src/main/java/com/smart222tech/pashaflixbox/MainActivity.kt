@@ -4,6 +4,8 @@ import android.net.Uri
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
+import coil.compose.AsyncImage
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.focusable
 import androidx.compose.foundation.layout.*
@@ -36,7 +38,8 @@ private data class MediaEntry(
     val title: String,
     val kind: String,
     val description: String,
-    val streamUrl: String? = null
+    val streamUrl: String? = null,
+    val logoUrl: String? = null
 )
 
 private enum class AppSection(val label: String) {
@@ -96,7 +99,8 @@ private fun PashaFlixBoxApp() {
                 title = item.title,
                 kind = if (item.isSeries) "Serie" else "Film",
                 description = listOf(item.group, "Playlist").filter(String::isNotBlank).joinToString(" · "),
-                streamUrl = item.streamUrl
+                streamUrl = item.streamUrl,
+                logoUrl = item.logoUrl
             )
         }
     }
@@ -280,6 +284,15 @@ private fun MediaCard(item: MediaEntry, favorite: Boolean, onOpen: () -> Unit, o
         colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surfaceVariant)
     ) {
         Row(Modifier.padding(14.dp), verticalAlignment = Alignment.CenterVertically) {
+            if (!item.logoUrl.isNullOrBlank()) {
+                AsyncImage(
+                    model = item.logoUrl,
+                    contentDescription = item.title,
+                    modifier = Modifier.size(width = 76.dp, height = 108.dp),
+                    contentScale = ContentScale.Crop
+                )
+                Spacer(Modifier.width(12.dp))
+            }
             Column(Modifier.weight(1f)) {
                 Text(item.title, style = MaterialTheme.typography.titleMedium)
                 Text(item.kind, style = MaterialTheme.typography.bodySmall)
@@ -310,6 +323,14 @@ private fun DetailScreen(
         verticalArrangement = Arrangement.spacedBy(14.dp)
     ) {
         TextButton(onClick = onBack) { Text("← Zurück") }
+        if (!item.logoUrl.isNullOrBlank()) {
+            AsyncImage(
+                model = item.logoUrl,
+                contentDescription = item.title,
+                modifier = Modifier.size(width = 150.dp, height = 220.dp),
+                contentScale = ContentScale.Crop
+            )
+        }
         Text(item.title, style = MaterialTheme.typography.headlineMedium)
         Text(listOf(item.kind, item.description).filter(String::isNotBlank).joinToString(" · "))
         Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
